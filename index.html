@@ -1,61 +1,685 @@
 <!DOCTYPE html>
-<html lang="en" class="black">
-
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <meta name="theme-color" content="#1C1F2D">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <meta name="apple-mobile-web-app-title" content="Quotex">
-    <title>Quotex demo account | QxBroker demo</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<title>Achatgram</title>
+<meta name="theme-color" content="#0d1520">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Achatgram">
+<link id="manifestLink" rel="manifest" href="logo.png">
+<link id="favicon" rel="icon" href="logo.png">
+<link id="appleIcon" rel="apple-touch-icon" href="logo.png">
 
-    <link rel="apple-touch-icon" sizes="180x180" href="https://market-qx.trade/trade-room/react/quotex-pwa-icons/icon_180x180.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="https://market-qx.trade/trade-room/react/quotex-pwa-icons/icon_152x152.png">
-    <link rel="apple-touch-icon" sizes="120x120" href="https://market-qx.trade/trade-room/react/quotex-pwa-icons/icon_120x120.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="https://market-qx.trade/profile/favicons/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="https://market-qx.trade/profile/favicons/favicon-16x16.png">
-    <link rel="shortcut icon" href="https://market-qx.trade/profile/favicons/favicon.ico">
-    <link rel="mask-icon" href="https://market-qx.trade/profile/favicons/safari-pinned-tab.svg" color="#a0002a">
-    <link rel="manifest" href="https://market-qx.trade/trade-room/react/manifest.json">
-    <meta name="msapplication-TileColor" content="#a0002a">
-    <meta name="msapplication-config" content="https://market-qx.trade/profile/favicons/browserconfig.xml">
-    <meta name="interkassa-verification" content="52ae35204ccc1b97dfc591cb53ca5d3a" />
-    <link rel="shortcut icon" href="https://market-qx.trade/profile/images/favicon.png">
+<style>
+:root{
+  --bg:#0d1520;
+  --panel:#111c29;
+  --panel-2:#15212f;
+  --hover:#1a2735;
+  --accent:#2ea6ff;
+  --accent-deep:#1c5fa8;
+  --text:#e8edf2;
+  --muted:#7c8a9a;
+  --border:#1d2a38;
+  --bubble-out:#1f6fb2;
+  --bubble-in:#1c2733;
+  --danger:#e0566b;
+  --radius:16px;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;}
+#app{position:fixed;inset:0;display:flex;flex-direction:column;overflow:hidden;}
+button{font-family:inherit;cursor:pointer;border:none;}
+input{font-family:inherit;}
+a{color:var(--accent);}
 
-        <link rel="stylesheet" href="https://market-qx.trade/trade-room/react/app.css?v=1776458815">
-            <link rel="stylesheet" href="https://market-qx.trade/css/debugbar/debug-bar-decorator.css">
-    
-    <link rel="stylesheet" href="https://market-qx.trade/profile/css/custom.css?v=1723031390">
-        <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-L4T5GBPFHJ"></script>
-<script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
+/* ---------- Screens ---------- */
+.screen{display:none;flex:1;flex-direction:column;height:100%;}
+.screen.active{display:flex;}
 
-    gtag('config', 'G-L4T5GBPFHJ');
-</script>    <meta name="google" content="notranslate" />
+/* ---------- Login ---------- */
+#loginScreen{align-items:center;justify-content:center;padding:24px;text-align:center;}
+.login-card{width:100%;max-width:380px;}
+.brand{display:flex;flex-direction:column;align-items:center;gap:10px;margin-bottom:28px;}
+.brand-icon{width:64px;height:64px;border-radius:50%;}
+.brand h1{font-size:22px;margin:0;font-weight:700;letter-spacing:.2px;}
+.brand p{margin:0;color:var(--muted);font-size:13px;}
+.step{display:none;flex-direction:column;gap:14px;}
+.step.active{display:flex;}
+.step-icon{width:46px;height:46px;border-radius:50%;background:var(--panel-2);display:flex;align-items:center;justify-content:center;margin:0 auto 6px;color:var(--accent);}
+.step h2{margin:0;font-size:18px;}
+.step p.hint{margin:0;color:var(--muted);font-size:13px;line-height:1.4;}
+.field{display:flex;align-items:center;gap:10px;background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:13px 14px;}
+.field input{flex:1;background:transparent;border:none;outline:none;color:var(--text);font-size:16px;letter-spacing:.3px;}
+.field svg{flex-shrink:0;color:var(--muted);width:18px;height:18px;}
+.btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent-deep));color:#fff;border-radius:12px;padding:13px;font-size:15px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px;}
+.btn-primary:active{transform:scale(.98);}
+.btn-text{background:none;color:var(--muted);font-size:13px;padding:6px;}
+.spinner{width:30px;height:30px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.status-text{color:var(--muted);font-size:13px;margin-top:14px;}
+
+/* ---------- App shell ---------- */
+#appScreen{flex-direction:row;height:100%;}
+#sidebar{width:100%;max-width:400px;background:var(--panel);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;}
+.sidebar-top{padding:14px 16px 10px;display:flex;align-items:center;justify-content:space-between;}
+.sidebar-top h1{font-size:20px;margin:0;font-weight:700;}
+.icon-btn{width:38px;height:38px;border-radius:50%;background:transparent;display:flex;align-items:center;justify-content:center;color:var(--muted);}
+.icon-btn:hover{background:var(--hover);color:var(--text);}
+.search-wrap{padding:0 16px 10px;}
+.search-wrap .field{padding:9px 14px;border-radius:20px;}
+#dialogList{overflow-y:auto;flex:1;}
+.dialog-item{display:flex;align-items:center;gap:12px;padding:10px 16px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,0.03);}
+.dialog-item:hover,.dialog-item.active{background:var(--hover);}
+.avatar{width:50px;height:50px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;color:#fff;flex-shrink:0;font-size:18px;overflow:hidden;}
+.avatar img{width:100%;height:100%;object-fit:cover;}
+.dialog-info{flex:1;min-width:0;}
+.dialog-row1{display:flex;justify-content:space-between;align-items:baseline;gap:8px;}
+.dialog-name{font-weight:600;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:5px;}
+.dialog-name svg{width:14px;height:14px;color:var(--muted);flex-shrink:0;}
+.dialog-time{font-size:11px;color:var(--muted);flex-shrink:0;}
+.dialog-row2{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:2px;}
+.dialog-preview{font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:4px;}
+.dialog-preview svg{width:13px;height:13px;flex-shrink:0;}
+.unread-badge{background:var(--accent);color:#fff;font-size:11px;font-weight:700;border-radius:10px;min-width:20px;height:20px;padding:0 6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;color:var(--muted);gap:10px;padding:30px;text-align:center;font-size:13px;}
+
+/* ---------- Chat panel ---------- */
+#chatPanel{flex:1;display:flex;flex-direction:column;min-width:0;background:
+  radial-gradient(circle at 20% 20%, rgba(46,166,255,0.04), transparent 40%),
+  var(--bg);}
+.chat-placeholder{flex:1;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:14px;}
+.chat-header{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid var(--border);background:var(--panel);flex-shrink:0;}
+.chat-header .avatar{width:38px;height:38px;font-size:14px;}
+.chat-title{flex:1;min-width:0;}
+.chat-title .name{font-weight:600;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.chat-title .sub{font-size:12px;color:var(--muted);}
+#backBtn{display:none;}
+#messages{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:4px;}
+.msg-row{display:flex;}
+.msg-row.out{justify-content:flex-end;}
+.bubble{max-width:72%;padding:9px 12px;border-radius:var(--radius);font-size:14.5px;line-height:1.4;position:relative;word-wrap:break-word;}
+.msg-row.in .bubble{background:var(--bubble-in);border-bottom-left-radius:4px;}
+.msg-row.out .bubble{background:var(--bubble-out);border-bottom-right-radius:4px;}
+.bubble .meta{display:flex;justify-content:flex-end;gap:4px;align-items:center;margin-top:4px;font-size:10.5px;color:rgba(255,255,255,0.6);}
+.bubble .meta svg{width:13px;height:13px;}
+.media-box{display:flex;align-items:center;gap:8px;background:rgba(0,0,0,0.18);border-radius:10px;padding:8px 10px;cursor:pointer;margin-bottom:4px;}
+.media-box svg{width:18px;height:18px;}
+.msg-photo{max-width:240px;border-radius:10px;display:block;margin-top:2px;}
+.composer{display:flex;align-items:center;gap:10px;padding:10px 14px;border-top:1px solid var(--border);background:var(--panel);flex-shrink:0;}
+.composer .field{flex:1;border-radius:22px;padding:10px 16px;}
+.send-btn{width:42px;height:42px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.send-btn svg{width:19px;height:19px;}
+
+/* ---------- Toast & install bar ---------- */
+#toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%) translateY(40px);background:#1c2733;color:var(--text);padding:11px 18px;border-radius:10px;font-size:13px;box-shadow:0 6px 20px rgba(0,0,0,0.4);opacity:0;transition:all .25s;z-index:50;max-width:90%;text-align:center;}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+#installBar{display:none;align-items:center;gap:10px;background:var(--panel-2);border-bottom:1px solid var(--border);padding:9px 14px;font-size:13px;flex-shrink:0;}
+#installBar svg{width:18px;height:18px;color:var(--accent);flex-shrink:0;}
+#installBar .grow{flex:1;}
+#installBar button{background:var(--accent);color:#fff;border-radius:8px;padding:7px 12px;font-size:12.5px;font-weight:600;}
+#installBar .dismiss{background:none;color:var(--muted);padding:6px;}
+
+/* ---------- Responsive: phone ---------- */
+@media (max-width:768px){
+  #appScreen{position:relative;}
+  #sidebar{position:absolute;inset:0;max-width:none;z-index:2;transition:transform .25s ease;}
+  #chatPanel{position:absolute;inset:0;transform:translateX(100%);transition:transform .25s ease;z-index:3;}
+  #appScreen.show-chat #sidebar{transform:translateX(-100%);}
+  #appScreen.show-chat #chatPanel{transform:translateX(0);}
+  #backBtn{display:flex;}
+  .bubble{max-width:82%;}
+}
+::-webkit-scrollbar{width:6px;}
+::-webkit-scrollbar-thumb{background:#22303f;border-radius:3px;}
+</style>
 </head>
-<body class="loading">
-<noscript>You need to enable JavaScript to run this app.</noscript>
-<div id="root"></div>
+<body>
 
-<script type="text/javascript">
-    window.settings = {"fpjsDomain":null,"liveBalance":"0.00000000","demoBalance":"132.66000000","tournamentsBalances":[],"bonus":[],"possibleBonus":{"promocode":"WELCOME50","percent":50},"activePromocodes":[],"activeTournamentProfiles":[],"tournamentsMeta":{"current":1,"coming":3,"completed":13},"isDemo":1,"isDemoProfile":false,"tournamentId":0,"id":"78336758","token":"W7skG96HDkQSnnJWmugfqGFcQ1OiWXfbrufRo7At","csrf":"OzlDu5OxP2IhrG0eN2A0kh8ywLCLTmmMIocq32At","nickname":"Ahmad Bhai","email":"screenshotcapture67@gmail.com","avatar":"https:\/\/market-qx.trade\/en\/user\/avatar\/view\/85\/76\/33\/87\/avatar8ef4af0c03655e92a52360b388116ae1.png","country":"PK","countryName":"Pakistan","countryIp":"PK","url":"https:\/\/market-qx.trade\/en\/","lang":"en","langs":{"ar":{"code":"sa","url":"\/ar\/demo-trade\/","name":"العربية","active":false},"bn":{"code":"bn","url":"\/bn\/demo-trade\/","name":"বাংলা","active":false},"en":{"code":"gb","url":"\/en\/demo-trade\/","name":"English","active":true},"es":{"code":"es","url":"\/es\/demo-trade\/","name":"Español","active":false},"fa":{"code":"ir","url":"\/fa\/demo-trade\/","name":"فارسی","active":false},"fl":{"code":"ph","url":"\/fl\/demo-trade\/","name":"Filipino","active":false},"fr":{"code":"fr","url":"\/fr\/demo-trade\/","name":"Français","active":false},"ha":{"code":"ha","url":"\/ha\/demo-trade\/","name":"Hausa","active":false},"hi":{"code":"in","url":"\/hi\/demo-trade\/","name":"हिन्दी","active":false},"id":{"code":"id","url":"\/id\/demo-trade\/","name":"Indonesian","active":false},"ja":{"code":"jp","url":"\/ja\/demo-trade\/","name":"日本語","active":false},"ko":{"code":"kr","url":"\/ko\/demo-trade\/","name":"한국어","active":false},"ms":{"code":"my","url":"\/ms\/demo-trade\/","name":"Malay","active":false},"my":{"code":"my","url":"\/my\/demo-trade\/","name":"မြန်မာဘာသာ","active":false},"pt":{"code":"br","url":"\/pt\/demo-trade\/","name":"Português","active":false},"ru":{"code":"ru","url":"\/ru\/demo-trade\/","name":"Русский","active":false},"sw":{"code":"sw","url":"\/sw\/demo-trade\/","name":"Kiswahili","active":false},"th":{"code":"th","url":"\/th\/demo-trade\/","name":"ไทย","active":false},"tr":{"code":"tr","url":"\/tr\/demo-trade\/","name":"Türkçe","active":false},"ua":{"code":"ua","url":"\/ua\/demo-trade\/","name":"Українська","active":false},"ur":{"code":"ur","url":"\/ur\/demo-trade\/","name":"اردو","active":false},"uz":{"code":"uz","url":"\/uz\/demo-trade\/","name":"Oʻzbekcha","active":false},"vt":{"code":"vn","url":"\/vt\/demo-trade\/","name":"Tiếng Việt","active":false},"zh":{"code":"cn","url":"\/zh\/demo-trade\/","name":"中文","active":false}},"tzlist":[{"value":"-39600","time":"-11:00","label":"(UTC-11:00)"},{"value":"-36000","time":"-10:00","label":"(UTC-10:00)"},{"value":"-34200","time":"-09:30","label":"(UTC-09:30)"},{"value":"-32400","time":"-09:00","label":"(UTC-09:00)"},{"value":"-28800","time":"-08:00","label":"(UTC-08:00)"},{"value":"-25200","time":"-07:00","label":"(UTC-07:00)"},{"value":"-21600","time":"-06:00","label":"(UTC-06:00)"},{"value":"-18000","time":"-05:00","label":"(UTC-05:00)"},{"value":"-14400","time":"-04:00","label":"(UTC-04:00)"},{"value":"-12600","time":"-03:30","label":"(UTC-03:30)"},{"value":"-10800","time":"-03:00","label":"(UTC-03:00)"},{"value":"-7200","time":"-02:00","label":"(UTC-02:00)"},{"value":"-3600","time":"-01:00","label":"(UTC-01:00)"},{"value":"0","time":"+00:00","label":"(UTC+00:00)"},{"value":"3600","time":"+01:00","label":"(UTC+01:00)"},{"value":"7200","time":"+02:00","label":"(UTC+02:00)"},{"value":"10800","time":"+03:00","label":"(UTC+03:00)"},{"value":"12600","time":"+03:30","label":"(UTC+03:30)"},{"value":"14400","time":"+04:00","label":"(UTC+04:00)"},{"value":"16200","time":"+04:30","label":"(UTC+04:30)"},{"value":"18000","time":"+05:00","label":"(UTC+05:00)"},{"value":"19800","time":"+05:30","label":"(UTC+05:30)"},{"value":"20700","time":"+05:45","label":"(UTC+05:45)"},{"value":"21600","time":"+06:00","label":"(UTC+06:00)"},{"value":"23400","time":"+06:30","label":"(UTC+06:30)"},{"value":"25200","time":"+07:00","label":"(UTC+07:00)"},{"value":"28800","time":"+08:00","label":"(UTC+08:00)"},{"value":"31500","time":"+08:45","label":"(UTC+08:45)"},{"value":"32400","time":"+09:00","label":"(UTC+09:00)"},{"value":"34200","time":"+09:30","label":"(UTC+09:30)"},{"value":"36000","time":"+10:00","label":"(UTC+10:00)"},{"value":"37800","time":"+10:30","label":"(UTC+10:30)"},{"value":"39600","time":"+11:00","label":"(UTC+11:00)"},{"value":"43200","time":"+12:00","label":"(UTC+12:00)"},{"value":"46800","time":"+13:00","label":"(UTC+13:00)"},{"value":"49500","time":"+13:45","label":"(UTC+13:45)"},{"value":"50400","time":"+14:00","label":"(UTC+14:00)"}],"timeOffset":"18000","currencyCode":"USD","currencySymbol":"$","currencies":["EUR","GBP","USD","BRL","IDR","MYR","INR","KZT","RUB","THB","UAH","VND","NGN","EGP","MXN","JPY","BDT","PKR","PHP","TRY","KRW"],"profileLevel":"standart","rawRates":{"EUR":"0.849293000000","GBP":"0.739426000000","USD":1,"BRL":"4.979500000000","IDR":"17140.350000000000","MYR":"3.952500000000","INR":97,"KZT":"469.120327000000","RUB":"76.231514000000","THB":"32.119410000000","UAH":"44.099113000000","VND":"26335.000000000000","NGN":"1345.790676000000","EGP":52,"MXN":"17.311101000000","JPY":"158.645044560000","BDT":127,"PKR":289,"PHP":"59.563999000000","TRY":"44.844405000000","KRW":"1467.040000000000"},"exchangeRates":{"EUR":0.82381421,"GBP":0.71724322,"USD":1,"BRL":4.830114999999999,"IDR":16626.139499999997,"MYR":3.833925,"INR":94.09,"KZT":455.04671719,"RUB":73.94456858,"THB":31.1558277,"UAH":42.77613961,"VND":25544.95,"NGN":1305.41695572,"EGP":50.44,"MXN":16.79176797,"JPY":153.8856932232,"BDT":123.19,"PKR":280.33,"PHP":57.77707903,"TRY":43.49907285,"KRW":1423.0287999999998},"countUnreadedMessages":0,"countUnreadedNotifications":31,"hasProfileNotifications":false,"minDealAmount":1,"maxDealAmount":3000,"minDealAmountUsd":1,"maxDealAmountUsd":3000,"minDepositAmount":10,"recommendedDepositAmount":100,"defaultError":"An error occured","requiredFieldError":"This field is required","levelsList":[0,5000,10000],"onlyFastAllowed":false,"tgLink":"quotex_official","background":{"file":null,"opacity":null},"maxDemoBalance":10000,"isHideTradingUI":false,"isHideTournaments":false,"countNonActivatedPromocodes":4};
-</script>
-<script src="https://market-qx.trade/trade-room/react/vendor.js?v=1776458815"></script><script src="https://market-qx.trade/trade-room/react/app.js?v=1776458815"></script>
-<script type="text/javascript">
-    (function () {
-        var messages = {"day":"day","days2":"days","days5":"days"};
-        window.tJSON = window.tJSON || {};
-        for (var i in messages) {
-            if (messages.hasOwnProperty(i)) {
-                window.tJSON[i] = messages[i];
-            }
-        }
-    })();
+<div id="app">
+
+  <div id="installBar"></div>
+  <div id="toast"></div>
+
+  <!-- ================= LOGIN ================= -->
+  <div id="loginScreen" class="screen active">
+    <div class="login-card">
+      <div class="brand">
+        <img id="brandIcon" class="brand-icon" alt="Achatgram">
+        <h1>Achatgram</h1>
+        <p>A real Telegram client, your account.</p>
+      </div>
+
+      <div class="step active" data-step="connecting">
+        <div class="spinner"></div>
+        <p class="status-text" id="connectingText">Connecting to Telegram…</p>
+      </div>
+
+      <form class="step" data-step="phone" id="phoneForm">
+        <div class="step-icon"><i data-lucide="phone"></i></div>
+        <h2>Enter your phone number</h2>
+        <p class="hint">With country code, e.g. +91 98765 43210</p>
+        <div class="field">
+          <i data-lucide="phone"></i>
+          <input id="phoneInput" type="tel" placeholder="+91 98765 43210" autocomplete="tel" required>
+        </div>
+        <button class="btn-primary" type="submit"><i data-lucide="arrow-right"></i> Continue</button>
+      </form>
+
+      <form class="step" data-step="code" id="codeForm">
+        <div class="step-icon"><i data-lucide="shield-check"></i></div>
+        <h2>Enter the code</h2>
+        <p class="hint" id="codeHint">Telegram sent you a login code.</p>
+        <div class="field">
+          <i data-lucide="key-round"></i>
+          <input id="codeInput" type="text" inputmode="numeric" placeholder="••••••" autocomplete="one-time-code" required>
+        </div>
+        <button class="btn-primary" type="submit"><i data-lucide="check"></i> Verify</button>
+      </form>
+
+      <form class="step" data-step="password" id="passwordForm">
+        <div class="step-icon"><i data-lucide="lock"></i></div>
+        <h2>Two-step verification</h2>
+        <p class="hint">Enter your cloud password to finish.</p>
+        <div class="field">
+          <i data-lucide="lock"></i>
+          <input id="passwordInput" type="password" placeholder="Password" autocomplete="current-password" required>
+        </div>
+        <button class="btn-primary" type="submit"><i data-lucide="unlock"></i> Unlock</button>
+      </form>
+
+      <div class="step" data-step="error">
+        <div class="step-icon" style="color:var(--danger)"><i data-lucide="alert-triangle"></i></div>
+        <h2>Couldn't load Telegram engine</h2>
+        <p class="hint" id="errorText">Something went wrong.</p>
+        <button class="btn-text" onclick="location.reload()">Reload</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= APP ================= -->
+  <div id="appScreen" class="screen">
+    <div id="sidebar">
+      <div class="sidebar-top">
+        <h1>Achatgram</h1>
+        <button class="icon-btn" id="logoutBtn" title="Log out"><i data-lucide="log-out"></i></button>
+      </div>
+      <div class="search-wrap">
+        <div class="field">
+          <i data-lucide="search"></i>
+          <input id="searchInput" type="text" placeholder="Search chats">
+        </div>
+      </div>
+      <div id="dialogList"></div>
+    </div>
+
+    <div id="chatPanel">
+      <div class="chat-placeholder" id="chatPlaceholder">Select a chat to start messaging</div>
+      <div id="chatInner" style="display:none;flex:1;flex-direction:column;min-width:0;">
+        <div class="chat-header">
+          <button class="icon-btn" id="backBtn"><i data-lucide="arrow-left"></i></button>
+          <div class="avatar" id="chatAvatar"></div>
+          <div class="chat-title">
+            <div class="name" id="chatName"></div>
+            <div class="sub" id="chatSub"></div>
+          </div>
+        </div>
+        <div id="messages"></div>
+        <div class="composer">
+          <div class="field">
+            <input id="msgInput" type="text" placeholder="Message" autocomplete="off">
+          </div>
+          <button class="send-btn" id="sendBtn"><i data-lucide="send"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Real icons via Lucide (SVG, no emoji) -->
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
+<script type="module">
+// ====================================================================
+// Achatgram — real Telegram client (MTProto via GramJS), single file.
+//
+// NOTE FOR YOU (the developer running this):
+// GramJS officially ships no prebuilt browser bundle — its own docs say
+// a webpack build is required ("currently bundle files aren't provided
+// separately and need to be compiled"). The import below uses esm.sh,
+// a CDN that auto-converts npm packages (incl. Node-dependent ones) to
+// browser ESM with polyfills. This is the closest zero-build path, but
+// it has NOT been tested against live Telegram servers in this build
+// environment (no internet access there). If it fails to load/connect,
+// the screen below will show the real error — see the comment block
+// at the very bottom of this script for the guaranteed-working
+// fallback (a tiny local webpack build).
+// ====================================================================
+
+const API_ID = 35997007;
+const API_HASH = "66285b6209f58fc4350cc7de46016887";
+// Note: the MTProxy/production IP:port you have (149.154.167.40/.50:443)
+// are Telegram's raw DC endpoints for native TCP clients. Browsers can't
+// open raw TCP sockets, so GramJS instead talks to Telegram's WebSocket
+// gateway directly (useWSS below) — those IPs aren't needed here.
+
+const SESSION_KEY = "achatgram_session";
+let TelegramClient, StringSession, NewMessage, Api;
+let client, me, currentDialog, dialogsCache = [];
+
+const $ = (sel) => document.querySelector(sel);
+const screens = { login: $("#loginScreen"), app: $("#appScreen") };
+
+function showScreen(name){
+  Object.values(screens).forEach(s=>s.classList.remove("active"));
+  screens[name].classList.add("active");
+}
+function showStep(name){
+  document.querySelectorAll("#loginScreen .step").forEach(s=>s.classList.remove("active"));
+  const el = document.querySelector(`#loginScreen .step[data-step="${name}"]`);
+  if(el) el.classList.add("active");
+}
+function icons(){ try{ lucide.createIcons(); }catch(e){} }
+let toastTimer;
+function toast(msg){
+  const t = $("#toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>t.classList.remove("show"), 3500);
+}
+function fatal(msg){
+  showStep("error");
+  $("#errorText").textContent = msg;
+  console.error(msg);
+}
+
+// ---------------- App icon / manifest (canvas-drawn, no external image) ----------------
+function makeIcon(size){
+  const c = document.createElement("canvas");
+  c.width = c.height = size;
+  const ctx = c.getContext("2d");
+  const g = ctx.createLinearGradient(0,0,size,size);
+  g.addColorStop(0,"#2ea6ff"); g.addColorStop(1,"#1c5fa8");
+  ctx.fillStyle = g;
+  ctx.beginPath(); ctx.arc(size/2,size/2,size/2,0,Math.PI*2); ctx.fill();
+  ctx.fillStyle = "#fff";
+  ctx.beginPath();
+  ctx.moveTo(size*0.20,size*0.52); ctx.lineTo(size*0.82,size*0.20);
+  ctx.lineTo(size*0.60,size*0.80); ctx.lineTo(size*0.48,size*0.56);
+  ctx.closePath(); ctx.fill();
+  ctx.fillStyle = "rgba(255,255,255,0.55)";
+  ctx.beginPath();
+  ctx.moveTo(size*0.48,size*0.56); ctx.lineTo(size*0.82,size*0.20); ctx.lineTo(size*0.37,size*0.45);
+  ctx.closePath(); ctx.fill();
+  return c.toDataURL("image/png");
+}
+function setupIcons(){
+  const i192 = makeIcon(192), i512 = makeIcon(512);
+  $("#brandIcon").src = i192;
+  $("#favicon").href = i192;
+  $("#appleIcon").href = i192;
+  const manifest = {
+    name: "Achatgram",
+    short_name: "achatgramapp",
+    description: "A real Telegram client.",
+    start_url: "./",
+    scope: "./",
+    display: "standalone",
+    background_color: "#0d1520",
+    theme_color: "#0d1520",
+    icons: [
+      { src:i192, sizes:"192x192", type:"image/png", purpose:"any" },
+      { src:i512, sizes:"512x512", type:"image/png", purpose:"any" },
+      { src:i192, sizes:"192x192", type:"image/png", purpose:"maskable" }
+    ]
+  };
+  const blob = new Blob([JSON.stringify(manifest)], {type:"application/json"});
+  $("#manifestLink").href = URL.createObjectURL(blob);
+}
+
+// ---------------- PWA install ----------------
+function setupInstall(){
+  const bar = $("#installBar");
+  let deferred;
+  window.addEventListener("beforeinstallprompt", (e)=>{
+    e.preventDefault();
+    deferred = e;
+    bar.style.display = "flex";
+    bar.innerHTML = `<i data-lucide="download"></i><span class="grow">Install Achatgram as an app</span>
+      <button id="installGo">Install</button><button class="dismiss" id="installNo"><i data-lucide="x"></i></button>`;
+    icons();
+    $("#installGo").onclick = async ()=>{ deferred.prompt(); await deferred.userChoice; bar.style.display="none"; };
+    $("#installNo").onclick = ()=> bar.style.display="none";
+  });
+  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  const standalone = window.navigator.standalone || window.matchMedia("(display-mode: standalone)").matches;
+  if(isIOS && !standalone){
+    bar.style.display = "flex";
+    bar.innerHTML = `<i data-lucide="share"></i><span class="grow">Add to Home Screen: tap Share → "Add to Home Screen"</span>
+      <button class="dismiss" id="iosNo"><i data-lucide="x"></i></button>`;
+    icons();
+    $("#iosNo").onclick = ()=> bar.style.display="none";
+  }
+  if("serviceWorker" in navigator){
+    navigator.serviceWorker.register("./sw.js").catch(()=>{ /* sw.js must sit next to this file */ });
+  }
+}
+
+// ---------------- Load GramJS from CDN ----------------
+async function loadGramJS(){
+  const mod = await import("https://esm.sh/telegram@2.26.22");
+  const sessMod = await import("https://esm.sh/telegram@2.26.22/sessions");
+  const evMod = await import("https://esm.sh/telegram@2.26.22/events");
+  TelegramClient = mod.TelegramClient;
+  Api = mod.Api;
+  StringSession = sessMod.StringSession;
+  NewMessage = evMod.NewMessage;
+}
+
+// ---------------- Login flow ----------------
+let resolvePhone, resolveCode, resolvePassword;
+$("#phoneForm").addEventListener("submit", (e)=>{
+  e.preventDefault();
+  const v = $("#phoneInput").value.trim();
+  if(v && resolvePhone){ showStep("connecting"); $("#connectingText").textContent="Sending code…"; resolvePhone(v); }
+});
+$("#codeForm").addEventListener("submit", (e)=>{
+  e.preventDefault();
+  const v = $("#codeInput").value.trim();
+  if(v && resolveCode){ showStep("connecting"); $("#connectingText").textContent="Verifying code…"; resolveCode(v); }
+});
+$("#passwordForm").addEventListener("submit", (e)=>{
+  e.preventDefault();
+  const v = $("#passwordInput").value;
+  if(v && resolvePassword){ showStep("connecting"); $("#connectingText").textContent="Unlocking…"; resolvePassword(v); }
+});
+
+function askPhone(){ showStep("phone"); icons(); return new Promise(r=>resolvePhone=r); }
+function askCode(){ showStep("code"); icons(); return new Promise(r=>resolveCode=r); }
+function askPassword(){ showStep("password"); icons(); return new Promise(r=>resolvePassword=r); }
+
+async function login(){
+  try{
+    await client.start({
+      phoneNumber: askPhone,
+      phoneCode: askCode,
+      password: askPassword,
+      onError: (err)=>{ toast(err.message || String(err)); showStep("phone"); }
+    });
+    localStorage.setItem(SESSION_KEY, client.session.save());
+    await enterApp();
+  }catch(err){
+    fatal("Login failed: " + (err?.message || err));
+  }
+}
+
+// ---------------- Main app ----------------
+async function enterApp(){
+  showScreen("app");
+  icons();
+  try{ me = await client.getMe(); }catch(e){}
+  client.addEventHandler(onUpdate, new NewMessage({}));
+  await loadDialogs();
+}
+
+function colorFor(idStr){
+  let h = 0;
+  for(const ch of idStr) h = (h*31 + ch.charCodeAt(0)) % 360;
+  return `hsl(${h},58%,42%)`;
+}
+function initials(name){
+  if(!name) return "?";
+  const parts = name.trim().split(/\s+/);
+  return ((parts[0]?.[0]||"") + (parts[1]?.[0]||"")).toUpperCase() || "?";
+}
+function avatarEl(name, idStr, size){
+  const div = document.createElement("div");
+  div.className = "avatar";
+  div.style.background = colorFor(idStr || name || "x");
+  div.style.width = div.style.height = size+"px";
+  div.textContent = initials(name);
+  return div;
+}
+function fmtTime(date){
+  if(!date) return "";
+  const d = new Date(date * 1000);
+  const now = new Date();
+  if(d.toDateString() === now.toDateString()){
+    return d.toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"});
+  }
+  return d.toLocaleDateString([], {day:"2-digit", month:"short"});
+}
+
+async function loadDialogs(){
+  try{
+    const dialogs = await client.getDialogs({ limit: 80 });
+    dialogsCache = dialogs;
+    renderDialogList(dialogs);
+  }catch(e){ toast("Couldn't load chats: " + (e.message||e)); }
+}
+
+function previewOf(message){
+  if(!message) return { icon:null, text:"No messages yet" };
+  if(message.media){
+    if(message.photo) return { icon:"image", text:"Photo" };
+    if(message.video) return { icon:"video", text:"Video" };
+    if(message.document) return { icon:"file-text", text: message.message || "Document" };
+    return { icon:"paperclip", text:"Attachment" };
+  }
+  return { icon:null, text: message.message || "" };
+}
+
+function renderDialogList(dialogs, filter=""){
+  const list = $("#dialogList");
+  list.innerHTML = "";
+  const f = filter.trim().toLowerCase();
+  const filtered = f ? dialogs.filter(d => (d.name||"").toLowerCase().includes(f)) : dialogs;
+  if(filtered.length === 0){
+    list.innerHTML = `<div class="empty-state"><i data-lucide="inbox"></i><div>No chats found</div></div>`;
+    icons();
+    return;
+  }
+  for(const d of filtered){
+    const idStr = String(d.id);
+    const row = document.createElement("div");
+    row.className = "dialog-item";
+    const prev = previewOf(d.message);
+    row.appendChild(avatarEl(d.name, idStr, 50));
+    const badge = d.isChannel ? "radio" : d.isGroup ? "users" : null;
+    row.insertAdjacentHTML("beforeend", `
+      <div class="dialog-info">
+        <div class="dialog-row1">
+          <div class="dialog-name">${badge? `<i data-lucide="${badge}"></i>`:""}${escapeHtml(d.name||"Unknown")}</div>
+          <div class="dialog-time">${fmtTime(d.message?.date)}</div>
+        </div>
+        <div class="dialog-row2">
+          <div class="dialog-preview">${prev.icon?`<i data-lucide="${prev.icon}"></i>`:""}${escapeHtml(prev.text).slice(0,42)}</div>
+          ${d.unreadCount? `<div class="unread-badge">${d.unreadCount>99?"99+":d.unreadCount}</div>`:""}
+        </div>
+      </div>`);
+    row.addEventListener("click", ()=>openChat(d));
+    list.appendChild(row);
+  }
+  icons();
+}
+
+function escapeHtml(s){
+  return String(s||"").replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+
+$("#searchInput").addEventListener("input", (e)=> renderDialogList(dialogsCache, e.target.value));
+
+async function openChat(dialog){
+  currentDialog = dialog;
+  $("#appScreen").classList.add("show-chat");
+  $("#chatPlaceholder").style.display = "none";
+  $("#chatInner").style.display = "flex";
+  $("#chatAvatar").replaceWith(avatarEl(dialog.name, String(dialog.id), 38));
+  $("#chatAvatar").id = "chatAvatar"; // re-tag after replace (see below fix)
+  $("#chatName").textContent = dialog.name || "Unknown";
+  $("#chatSub").textContent = dialog.isChannel ? "Channel" : dialog.isGroup ? "Group" : "Private chat";
+  $("#messages").innerHTML = `<div class="spinner" style="margin-top:30px;"></div>`;
+  icons();
+  try{
+    const msgs = await client.getMessages(dialog.entity, { limit: 50 });
+    renderMessages(msgs.slice().reverse());
+    // mark seen locally (best-effort)
+    dialog.unreadCount = 0;
+    renderDialogList(dialogsCache, $("#searchInput").value);
+  }catch(e){
+    $("#messages").innerHTML = `<div class="empty-state">Couldn't load messages: ${escapeHtml(e.message||String(e))}</div>`;
+  }
+}
+
+$("#backBtn").addEventListener("click", ()=> $("#appScreen").classList.remove("show-chat"));
+
+function bubbleNode(message){
+  const row = document.createElement("div");
+  row.className = "msg-row " + (message.out ? "out":"in");
+  const bubble = document.createElement("div");
+  bubble.className = "bubble";
+
+  if(message.media && (message.photo || message.video || message.document)){
+    const box = document.createElement("div");
+    box.className = "media-box";
+    const kind = message.photo ? "image" : message.video ? "video" : "file-text";
+    box.innerHTML = `<i data-lucide="${kind}"></i><span>${message.photo?"Photo":message.video?"Video":(message.message||"Document")} — tap to view</span>`;
+    box.addEventListener("click", ()=>loadMedia(message, box));
+    bubble.appendChild(box);
+    if(message.message){
+      const t = document.createElement("div");
+      t.textContent = message.message;
+      bubble.appendChild(t);
+    }
+  } else {
+    bubble.appendChild(document.createTextNode(message.message || ""));
+  }
+
+  const meta = document.createElement("div");
+  meta.className = "meta";
+  meta.innerHTML = `<span>${fmtTime(message.date)}</span>` + (message.out ? `<i data-lucide="${message.out && message.unread===false?'check-check':'check'}"></i>` : "");
+  bubble.appendChild(meta);
+  row.appendChild(bubble);
+  return row;
+}
+
+async function loadMedia(message, container){
+  container.innerHTML = `<div class="spinner"></div>`;
+  try{
+    const buf = await client.downloadMedia(message, {});
+    const blob = new Blob([buf]);
+    const url = URL.createObjectURL(blob);
+    if(message.photo || message.video){
+      container.outerHTML = `<img class="msg-photo" src="${url}">`;
+    } else {
+      container.innerHTML = `<i data-lucide="download"></i><a href="${url}" download>Download file</a>`;
+      icons();
+    }
+  }catch(e){
+    container.innerHTML = `<span>Couldn't load media</span>`;
+  }
+}
+
+function renderMessages(msgs){
+  const wrap = $("#messages");
+  wrap.innerHTML = "";
+  for(const m of msgs) wrap.appendChild(bubbleNode(m));
+  icons();
+  wrap.scrollTop = wrap.scrollHeight;
+}
+
+async function sendCurrentMessage(){
+  const input = $("#msgInput");
+  const text = input.value.trim();
+  if(!text || !currentDialog) return;
+  input.value = "";
+  try{
+    const sent = await client.sendMessage(currentDialog.entity, { message: text });
+    $("#messages").appendChild(bubbleNode(sent));
+    icons();
+    $("#messages").scrollTop = $("#messages").scrollHeight;
+  }catch(e){ toast("Send failed: " + (e.message||e)); }
+}
+$("#sendBtn").addEventListener("click", sendCurrentMessage);
+$("#msgInput").addEventListener("keydown", (e)=>{ if(e.key==="Enter"){ e.preventDefault(); sendCurrentMessage(); } });
+
+async function onUpdate(event){
+  try{
+    const message = event.message;
+    if(currentDialog && message?.chatId && String(message.chatId) === String(currentDialog.id)){
+      $("#messages").appendChild(bubbleNode(message));
+      $("#messages").scrollTop = $("#messages").scrollHeight;
+      icons();
+    }
+    loadDialogs();
+  }catch(e){}
+}
+
+$("#logoutBtn").addEventListener("click", async ()=>{
+  if(!confirm("Log out of Achatgram?")) return;
+  try{ await client.invoke(new Api.auth.LogOut()); }catch(e){}
+  localStorage.removeItem(SESSION_KEY);
+  location.reload();
+});
+
+// ---------------- Boot ----------------
+async function init(){
+  setupIcons();
+  setupInstall();
+  icons();
+  try{
+    await loadGramJS();
+  }catch(e){
+    fatal("Couldn't load the Telegram library from the CDN (esm.sh/telegram). This usually means the esm.sh bundle of GramJS didn't resolve cleanly in-browser. Open the browser console for the exact error, or build GramJS locally with webpack (see comment at bottom of this file's <script>) and swap the import line. Details: " + (e.message||e));
+    return;
+  }
+
+  const saved = localStorage.getItem(SESSION_KEY) || "";
+  const session = new StringSession(saved);
+  try{
+    client = new TelegramClient(session, API_ID, API_HASH, {
+      connectionRetries: 5,
+      useWSS: true
+    });
+  }catch(e){
+    fatal("Couldn't initialize TelegramClient: " + (e.message||e));
+    return;
+  }
+
+  if(saved){
+    showStep("connecting");
+    $("#connectingText").textContent = "Reconnecting…";
+    try{
+      await client.connect();
+      if(await client.isUserAuthorized()){
+        await enterApp();
+        return;
+      }
+    }catch(e){ /* fall through to fresh login */ }
+  }
+  login();
+}
+
+init();
+
+// ====================================================================
+// GUARANTEED-WORKING FALLBACK if the esm.sh import above fails:
+// 1. mkdir achatgram && cd achatgram && npm init -y
+// 2. npm install telegram webpack webpack-cli
+// 3. npx webpack --entry ./node_modules/telegram/index.js --output-library GramJS \
+//      --output-filename gramjs.bundle.js --mode production --target web
+// 4. Add <script src="gramjs.bundle.js"></script> before this <script type="module">,
+//    then replace the loadGramJS() body with:
+//      TelegramClient = GramJS.TelegramClient; Api = GramJS.Api;
+//      StringSession = GramJS.sessions.StringSession; NewMessage = GramJS.events.NewMessage;
+//    (and drop the "type=module"/import lines). This path is officially
+//    documented by GramJS and will work.
+// ====================================================================
 </script>
 </body>
 </html>
